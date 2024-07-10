@@ -263,3 +263,24 @@
             index, show, store,
             update, destroy
         }
+
+24. Next buka aplikasi rest client contoh postman
+
+        GET http://localhost:7777/api/v1/employe
+
+        POST http://localhost:7777/api/v1/employe
+        body{
+        "employe_name":"depa panjie",
+        "employe_role":"hrd"
+        }
+        untuk method post kita coba post kolom employe role dengan enum yang tidak sesuai contoh valuenya backend
+
+        GET http://localhost:7777/api/v1/employe/:id
+
+        PUT http://localhost:7777/api/v1/employe/:id
+        body{
+        "employe_name":"depa panjie",
+        "employe_role":"hrd"
+        }
+
+        DELETE http://localhost:7777/api/v1/employe/:id
