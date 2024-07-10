@@ -58,12 +58,90 @@
 
         $ npx sequelize-cli
 
-      - [Dokumen link](https://sequelize.org/v5/manual/data-types.html)
-
         $ npx sequelize-cli model:generate --name Users --attributes username:string,fullname:string,email:string,password:string
+
+        $ npx sequelize-cli model:generate --name Employe --attributes employe_name:string,employe_role:enum,employe_phone_number:string,employe_address:string
+
+    [Dokumen link](https://sequelize.org/v5/manual/data-types.html)
 
 7. Migrasi model atau tabel yang sudah kita generate tadi dengan perintah berikut
 
         $ npx sequelize-cli db:migrate
 
     **Contoh tabel sudah terbuat akan ada dua tabel yaitu Sequelizemeta dan Users yang sudah kita definisikan tadi ketika generate model**
+
+8. Membuat seeder
+
+        $ npx sequelize-cli seed:generate --name demo-user
+
+        $ npx sequelize-cli seed:generate --name demo-employe
+
+9. Install dahulu package password hash karena disini , digunakan untuk hasing password
+
+        $ npm install password-hash
+
+10. Edit file seeder yang telah dibuat diatas
+
+        'use strict';
+        const passwordHash = require('password-hash');
+        module.exports = {
+          up: async (queryInterface, Sequelize) => {
+            const users = [];
+            for (let i = 0; i < 100; i++) {
+              users.push({
+                username: `user${i}`,
+                fullname:  `user${i}`,
+                email: `user${i}@gmail.com`,
+                password: passwordHash.generate(`user${i}`),
+                createdAt: new Date(),
+                updatedAt: new Date()
+              });
+            }
+            return queryInterface.bulkInsert('Users', users, {});
+          },
+          down: async (queryInterface, Sequelize) => {
+            return queryInterface.bulkDelete('Users', null, {
+              truncate: true
+            });
+          }
+        };
+
+11. Lalu jalankan perintah npx sequelize-cli db:seed:all
+
+        $ npx sequelize-cli db:seed:all
+
+12. Jika ingin mengosongkan kembali tabel users kita ketikan perintah berikut
+
+        $ npx sequelize-cli db:seed:undo:all
+
+13. Install beberpa package untuk membuat crud restfull
+
+        $ npm install cors dotenv helmet nodemon
+
+14. Buat file environment dengan nama file .env di folder root projek (untuk port bebas asal no bentrok)
+
+        # file.env
+        TZ=Asia/Jakarta
+        APP_PORT=7777
+
+15. Setelah itu buat file dengan nama server.js di folder root projek
+
+        const express = require('express')
+        const app = express()
+        const routes = require('./routes')
+        require("dotenv").config()
+
+        app.use(express.urlencoded({extended: true})); 
+        app.use(express.json());
+        app.use(routes);
+
+        const server = app.listen(process.env.APP_PORT, () => console.log(`Api Running in Port ${process.env.APP_PORT}`))
+
+        process.on('SIGTERM', () => {
+          console.info('SIGTERM signal received.');
+          console.log('Closing http server.');
+          server.close(() => {
+            console.log('Http server closed.');
+            process.exit(0);
+          });
+        });
