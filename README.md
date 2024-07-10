@@ -13,17 +13,17 @@
 
 3. Buat file dengan nama .sequelizerc lalu isi dengan code seperti ini
 
-          const path = require('path');
-          module.exports = {
-            'config': path.resolve('config', 'migrationConfig.js'),
-            'models-path': path.resolve('database', 'models'),
-            'seeders-path': path.resolve('database', 'seeders'),
-            'migrations-path': path.resolve('database', 'migrations')
-          };
+        const path = require('path');
+        module.exports = {
+          'config': path.resolve('config', 'migrationConfig.js'),
+          'models-path': path.resolve('database', 'models'),
+          'seeders-path': path.resolve('database', 'seeders'),
+          'migrations-path': path.resolve('database', 'migrations')
+        };
 
 4. Kelompokan folder models, seeders, migrations di dalam folder database dengan perintah berikut
 
-          $ npx sequelize-cli init
+        $ npx sequelize-cli init
 
 5. Ubah file migrationConfig.js dan membuat sebuah file index.js di dalam folder config dengan code berikut
 
@@ -53,3 +53,17 @@
         }
         conf.ROUND_SALT = 8;
         module.exports = conf;
+
+6. Command untuk generate model dan migration melalui cli dokumentasi dengan mengetikan perintah berikut di terminal
+
+        $ npx sequelize-cli
+
+      - [Dokumen link](https://sequelize.org/v5/manual/data-types.html)
+
+        $ npx sequelize-cli model:generate --name Users --attributes username:string,fullname:string,email:string,password:string
+
+7. Migrasi model atau tabel yang sudah kita generate tadi dengan perintah berikut
+
+        $ npx sequelize-cli db:migrate
+
+    **Contoh tabel sudah terbuat akan ada dua tabel yaitu Sequelizemeta dan Users yang sudah kita definisikan tadi ketika generate model**
