@@ -145,3 +145,121 @@
             process.exit(0);
           });
         });
+
+16. Edit file package.json menjadi seperti ini
+
+        "scripts": {
+          "test": "echo \"Error: no test specified\" && exit 1",
+          "start": "nodemon --max-old-space-size=2048 server.js"
+        }
+
+17. Buat folder dengan nama controllers dan routes
+
+18. Folder routes buat file bernama index.js dan isikan berikut
+
+        'use strict'
+        const express = require('express')
+        const router = express()
+
+        router.get(`/api/v1/`, (_req, res) => {
+          res.json({
+            "message": "Welcome to restfullapi"
+          })
+        })
+
+        module.exports = router
+
+19. Testing dulu aplikasi nya buka browser dan keikan url localhost:7777 jika mengikuti tutorial ini portnya 7777
+
+        $ npm start
+
+20. Pastikan sudah meng-install express berikut 
+
+        $ npm install express
+
+21. Test browser open to
+
+        http://localhost:7777/api/v1
+
+22. Lanjut buat file dengan nama employeRoutes.js di folder routes yang isinya berikut
+
+        'use strict'
+        const express = require('express')
+        const employe = require('../controllers/employeController')
+        const router = express.Router()
+
+        router.get(`/api/v1/employe`, employe.index)
+        router.post(`/api/v1/employe`, employe.store)
+        router.get(`/api/v1/employe/:id`, employe.show)
+        router.put(`/api/v1/employe/:id`, employe.update)
+        router.delete(`/api/v1/employe/:id`, employe.destroy)
+
+        module.exports = router
+
+23. Dan buat file bernama employeController.js di folder controllers dan isinya berikut
+
+        const db = require("../database/models")
+        const Employe = db.Employe;
+
+        const store = async (req, res) => {
+            try {
+                const save = await Employe.create(req.body)
+                res.json(save).status(200)
+            } catch (error) {
+                res.json(error).status(422)
+            }
+        }
+
+        const index = async (req, res) => {
+            try {
+                const result = await Employe.findAndCountAll()
+                res.json(result).status(200)
+            } catch (error) {
+                res.json(error).status(422)
+            }
+        }
+
+        const show = async (req, res) => {
+            try {
+                const id = req.params.id
+                const data = await Employe.findByPk(id)
+                const result = data ? data : `${id} not found in db`
+                res.json(result).status(200)
+            } catch (error) {
+                res.json(error).status(422)
+            }
+        }
+
+        const update = (req, res) => {
+            Employe.findByPk(req.params.id).then((emp) => {
+                if(emp){
+                    emp.update(req.body)
+                    msg = emp
+                }else{
+                    msg = `${req.params.id} not found in db`
+                }
+                res.json({ message: msg })
+            }).catch((err) => {
+                res.json({ msg: err.message });
+            });
+        }
+
+        const destroy = (req, res) => {
+            let msg
+            Employe.findByPk(req.params.id).then((row) => {
+                if(row){
+                    row.destroy()
+                    msg = "success deleted"
+                }else{
+                    msg = `${req.params.id} not found in db`
+                }
+                res.json({ message: msg })
+            }).catch((err) => {
+                res.json({ message: err.message })
+            })
+        }
+
+        module.exports = {
+            index, show, store,
+            update, destroy
+        }
