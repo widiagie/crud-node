@@ -16,6 +16,9 @@ import PostCreate from './pages/posts/Create'
 //import component Post Edit
 import PostEdit from './pages/posts/Edit'
 
+//import component Weather Index
+import WeatherIndex from './pages/weather/Cuaca'
+
 function App() {
   return (
     <div>
@@ -38,6 +41,7 @@ function App() {
         <Route exact path="/posts" component={PostIndex} />
         <Route exact path="/posts/create" component={PostCreate} />
         <Route exact path="/posts/edit/:id" component={PostEdit} />
+        <Route exact path="/weather" component={WeatherIndex} />
       </Switch>
       
     </div>
